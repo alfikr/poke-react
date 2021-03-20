@@ -13,7 +13,7 @@ export default function ReleaseButton(props){
         if(poke){
             deleteRecord(poke.id).then(e=>{
                 alert('Pokemon dilepaskan')
-                window.reload()
+                window.location.reload()
             },err=>{
                 alert('Pokemon gagal dilepaskan')
             })

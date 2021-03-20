@@ -137,7 +137,7 @@ class PokeDetail extends Component{
                 <AppBar>
                     <Toolbar>
                         <Button onClick={this.kembaliHome}>
-                            <ArrowBackIcon />
+                            <ArrowBackIcon color="#FFFFFF" />
                         </Button>
                     </Toolbar>
                 </AppBar>

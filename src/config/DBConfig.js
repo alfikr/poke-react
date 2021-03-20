@@ -9,7 +9,7 @@ export const DBConfig={
                 {
                     name:'name',
                     keypath:'name',
-                    options:{unique:false}
+                    options:{unique:true}
                 },{
                     name:'url',
                     keypath:'url',
