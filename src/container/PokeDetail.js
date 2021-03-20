@@ -134,10 +134,10 @@ class PokeDetail extends Component{
         return(<Container>
             <h2>Detail Pokemon</h2>
             <Card>
-                <AppBar>
+                <AppBar color="primary">
                     <Toolbar>
                         <Button onClick={this.kembaliHome}>
-                            <ArrowBackIcon color="#FFFFFF" />
+                            <ArrowBackIcon color="secondary" />
                         </Button>
                     </Toolbar>
                 </AppBar>

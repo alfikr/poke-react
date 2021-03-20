@@ -5,29 +5,33 @@ import NavigationIcon from '@material-ui/icons/Navigation'
 function AddData(props){
     const {add,getByIndex} = useIndexedDB('pokemon')
     const [poke, setpoke] = useState()
-    useEffect(()=>{ 
-        getByIndex('name',props.detail.name).then(a=>{
-            setpoke(a);
-        },err=>{
-            console.log(err)
-        })
+    
+    useCallback(()=>{
+
     })
     const handleClick=()=>{
         
-        if(poke){
-            console.log('data ada')
-            alert('Pokemon sudah ditangkap')
-            return;
-        }
+        // if(poke){
+        //     console.log('data ada')
+            
+        // }
+        // getByIndex('name',props.detail.name).then(a=>{
+        //     setpoke(a);
+        //     console.log(a)
+        // },err=>{
+        //     console.log(err)
+        // })
         let pick = Math.random() > 0.5;
         console.log(pick)
         if(pick){
+            
             add({name:props.detail.name,url:process.env.REACT_APP_POKE_API_URL
                 +'pokemon/'+props.detail.id})
             .then(e=>{
                 alert('Selamat pokemon sudah berhasil ditangkap')
             },err=>{
                 console.error(err)
+                alert('pokemon sudah ditangkap')
             })
         }else{
             alert("Pokemon gagal ditangkap")

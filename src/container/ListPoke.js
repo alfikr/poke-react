@@ -58,7 +58,9 @@ export default class ListPoke extends Component{
         }
     }
     componentWillUnmount(){
-        window.removeEventListener('scroll',this.handleScroll)
+        if(window.removeEventListener){
+            window.removeEventListener('scroll',this.handleScroll)
+        }
     }
     
     getListData(){
