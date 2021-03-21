@@ -1,14 +1,18 @@
-import { Fab } from '@material-ui/core'
-import React,{useEffect,useState,useCallback} from 'react'
+import {  Fab } from '@material-ui/core'
+import React,{useState,useCallback} from 'react'
 import {useIndexedDB} from 'react-indexed-db'
+import {connect} from 'react-redux'
 import NavigationIcon from '@material-ui/icons/Navigation'
 function AddData(props){
     const {add,getByIndex} = useIndexedDB('pokemon')
     const [poke, setpoke] = useState()
-    
+    const [dialog, setDialog] = useState()
     useCallback(()=>{
 
     })
+    const showDialogNickName=(id)=>{
+
+    }
     const handleClick=()=>{
         
         // if(poke){
@@ -28,7 +32,8 @@ function AddData(props){
             add({name:props.detail.name,url:process.env.REACT_APP_POKE_API_URL
                 +'pokemon/'+props.detail.id})
             .then(e=>{
-                alert('Selamat pokemon sudah berhasil ditangkap')
+                console.log('id',e)
+                showDialogNickName(e)
             },err=>{
                 console.error(err)
                 alert('pokemon sudah ditangkap')
@@ -38,9 +43,11 @@ function AddData(props){
         }
         
     }
-    return <Fab variant="extended" onClick={handleClick}>
+    return <div>
+        <Fab variant="extended" onClick={handleClick}>
     <NavigationIcon/>Tangkap
 </Fab>
+    </div>
 }
 
-export default AddData
+export default connect()(AddData)

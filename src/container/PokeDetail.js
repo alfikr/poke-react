@@ -10,6 +10,7 @@ import { ExpandLess, ExpandMore } from '@material-ui/icons'
 import PutarRoda from '../service/PutarRoda'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import history from '../utils/history'
+import { connect } from 'react-redux'
 class PokeDetail extends Component{
     
     constructor(props){
@@ -189,14 +190,12 @@ class PokeDetail extends Component{
                 <NavigationIcon/>Tangkap
             </Fab> */}
             </footer>
-            <Dialog open={this.state.dialogTangkap}>
-            <DialogTitle id="fdafjkaljf">Proses tangkap</DialogTitle>
-            <Container>
-                <CircularProgress />
-            </Container>
-            </Dialog>
         </Container>)
     }
 }
+const mapStateToProps=(state)=>{
+    return{
 
-export default withRouter(PokeDetail)
+    }
+}
+export default withRouter(connect(mapStateToProps)(PokeDetail))
