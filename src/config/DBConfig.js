@@ -14,6 +14,18 @@ export const DBConfig={
                     name:'url',
                     keypath:'url',
                     options:{unique:false}
+                },{
+                    name:'nick',
+                    keypath:'nick',
+                    options:{unique:false}
+                },{
+                    name:'id_poke',
+                    keypath:'id_poke',
+                    options:{unique:true}
+                },{
+                    name:'image',
+                    keypath:'image',
+                    options:{unique:false}
                 }
             ]
         }

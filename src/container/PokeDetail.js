@@ -1,5 +1,9 @@
 import {Component} from 'react'
-import {Container,Button,AppBar,Card, Grid,DialogTitle,CardContent, List,ListItem, ListItemText, Collapse, Dialog, CircularProgress, Toolbar} from '@material-ui/core'
+import {Container,Button,Fab,AppBar,Card, Grid,
+    DialogTitle,CardContent, DialogActions,
+    List,ListItem, ListItemText, Collapse, 
+    TextField,
+    Dialog, CircularProgress, Toolbar, DialogContent} from '@material-ui/core'
 import PokeService from '../service/PokeService'
 import {withRouter} from 'react-router-dom'
 import Skeleton from '@material-ui/lab/Skeleton'
@@ -7,8 +11,8 @@ import {capitalCase} from 'text-case'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
-import PutarRoda from '../service/PutarRoda'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import NavigationIcon from '@material-ui/icons/Navigation'
 import history from '../utils/history'
 import { connect } from 'react-redux'
 class PokeDetail extends Component{
@@ -20,43 +24,50 @@ class PokeDetail extends Component{
             isAbilityOpen:false,
             isStatOpen:false,
             isTipeOpen:false,
-            dialogTangkap:false,
+            prosesTangkap:false,
+            dialogNickName:false,
+            nickName:''
         }
         this.handleDetail=this.handleDetail.bind(this)
         this.abilityOpen=this.abilityOpen.bind(this)
         this.statOpen=this.statOpen.bind(this)
+        this.handleNickClose=this.handleNickClose.bind(this)
+        this.tangkap=this.tangkap.bind(this)
+        this.handleSimpan=this.handleSimpan.bind(this)
+        this.handleNickName=this.handleNickName.bind(this)
+        this.handleNickClose=this.handleNickClose.bind(this)
         this.tipeOpen=this.tipeOpen.bind(this)
-        
-        // pokeArr.push({
-        //     name:that.state.name,
-        //     url:process.env.REACT_APP_POKE_API_URL
-        //     +'pokemon/'+that.state.id
-        // })
-        // localStorage.setItem('myPoke',JSON.stringify(pokeArr)) = this.tangkap.bind(this)
-    }
+        }
     componentDidMount(){
         const id = new URLSearchParams(this.props.location.search).get("id")
         PokeService.getPokeDetail(id).then(res=>{
-            console.log(res)
-            this.setState({
-                image:res.sprites,
-                imageDefault:res.sprites.other["official-artwork"]["front_default"],
-                types:res.types,
-                abilities:res.abilities,
-                forms:res.forms,
-                held_items:res.held_items,
-                game_indices:res.game_indices,
-                id:res.id,
-                isDefault:res.default,
-                location_area_encounters:res.location_area_encounters,
-                name:res.name,
-                past_types:res.past_types,
-                species:res.species,
-                stats:res.stats,
-                weight:res.weight,
-                isLoading:false,
-            })
-            console.log(this.state.imageDefault)
+            // console.log(res)
+            if(res){
+                this.setState({
+                    image:res.sprites,
+                    imageDefault:res.sprites.other["official-artwork"]["front_default"],
+                    types:res.types,
+                    abilities:res.abilities,
+                    forms:res.forms,
+                    held_items:res.held_items,
+                    game_indices:res.game_indices,
+                    id:res.id,
+                    isDefault:res.default,
+                    location_area_encounters:res.location_area_encounters,
+                    name:res.name,
+                    past_types:res.past_types,
+                    species:res.species,
+                    stats:res.stats,
+                    weight:res.weight,
+                    isLoading:false,
+                })
+            }else{
+                this.props.pesanError('Request data gagal',()=>{
+                    window.location.reload()
+                })
+            }
+        },err=>{
+            this.props.pesanError('Data tidak dapat ditemukan')
         })
     }
     kembaliHome(){
@@ -129,10 +140,70 @@ class PokeDetail extends Component{
     tipeOpen(){
         this.handleDetail(2,!this.state.isTipeOpen)
     }
-    
-    render(){
+    tangkap(){
+        this.setState({
+            prosesTangkap:true,
+        })
+        let pick = Math.random() > 0.5;
         
+        if(pick){
+            //Input Nickname
+            this.setState({
+                dialogNickName:true
+            })
+
+        }else{
+            this.props.pesanError('Gagal ditangkap');
+        }
+        this.setState({
+            prosesTangkap:false,
+        })
+    }
+    handleNickClose(){
+        this.setState({
+            dialogNickName:false
+        })
+    }
+    handleNickName(event){
+        this.setState({
+            nickName:event.target.value
+        })
+    }
+    handleSimpan(){
+        PokeService.StorePokemon({
+            id_poke:this.state.id,
+            nick:this.state.nickName,
+            name:this.state.name,
+            url:this.state.url,
+            image:this.state.imageDefault,
+        }).then(res=>{},err=>{
+            console.log(err)
+            if(err.srcElement.error.name=="ConstraintError"){
+                this.props.pesanError('Pokemon sudah ditangkap')
+            }else{
+                this.props.pesanError('Gagal simpan data')
+            }
+        })
+        this.setState({
+            dialogNickName:false,
+        })
+    }
+    render(){
         return(<Container>
+            <Dialog open={this.state.dialogNickName} 
+            onClose={this.handleNickClose}>
+                <DialogTitle>Masukkan Nick Name Pokemon</DialogTitle>
+                <DialogContent>
+                    <TextField autoFocus margin="dense"
+                    id="nickName" label="Nick Name"
+                    onChange={this.handleNickName}
+                    type="text" value={this.state.nickName}/>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleSimpan}>Simpan</Button>
+                    <Button onClick={this.handleNickClose}>Batal</Button>
+                </DialogActions>
+            </Dialog>
             <h2>Detail Pokemon</h2>
             <Card>
                 <AppBar color="primary">
@@ -180,17 +251,24 @@ class PokeDetail extends Component{
                         <h2>{capitalCase(this.state.name)}</h2>
                     </div>}
                 </CardContent>
-                
             </Card>
             <footer className="fab">
-                <PutarRoda detail={
-                    this.state
-                } />
-            {/* <Fab variant="extended" onClick={this.tangkap}>
-                <NavigationIcon/>Tangkap
-            </Fab> */}
+            <Fab variant="extended" onClick={this.tangkap}>
+                {this.state.prosesTangkap?<CircularProgress/>:<NavigationIcon/>}
+                Tangkap
+            </Fab>
             </footer>
         </Container>)
+    }
+}
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        pesanError:(event,aksi)=>dispatch({
+            type:'ERROR',
+            dialog:true,
+            message:event,
+            action:aksi
+    })
     }
 }
 const mapStateToProps=(state)=>{
@@ -198,4 +276,4 @@ const mapStateToProps=(state)=>{
 
     }
 }
-export default withRouter(connect(mapStateToProps)(PokeDetail))
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(PokeDetail))

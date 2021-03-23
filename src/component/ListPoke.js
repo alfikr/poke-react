@@ -1,7 +1,7 @@
 import {useIndexedDB,} from 'react-indexed-db'
 import {useState,useEffect} from 'react'
 import {List,ListItemText, ListItem,Card,CardContent,Container, Avatar, Button} from '@material-ui/core'
-import ButtonRelease from '../component/ButtonRelease'
+import ButtonRelease from './ButtonRelease'
 function ShowAll(){
     const {getAll} = useIndexedDB('pokemon')
     const [pokemon, setpokemon] = useState(null)
@@ -19,8 +19,7 @@ function ShowAll(){
                 <Card>
                     <CardContent>
                         <Container>
-                            <Avatar>
-
+                            <Avatar src={e.image}>
                             </Avatar>
                             {e.name}
                             <ButtonRelease detail={e} />
